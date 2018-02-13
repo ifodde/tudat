@@ -11,6 +11,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
+#include <math.h>
 
 #include "Tudat/Astrodynamics/Aerodynamics/aerodynamics.h"
 #include "Tudat/Astrodynamics/Aerodynamics/flightConditions.h"
@@ -77,7 +78,9 @@ void FlightConditions::setAerodynamicCoefficientsIndependentVariableFunction(
     if( ( independentVariable == mach_number_dependent ) ||
             ( independentVariable == angle_of_attack_dependent ) ||
             ( independentVariable == angle_of_sideslip_dependent )||
-            ( independentVariable == altitude_dependent ) )
+            ( independentVariable == altitude_dependent ) ||
+            ( independentVariable == airspeed_dependent) ||
+            ( independentVariable == knudsen_number_dependent) )
     {
         throw std::runtime_error(
                     std::string( "Error when setting aerodynamic coefficient function dependency, value of parameter " ) +
@@ -172,6 +175,12 @@ double FlightConditions::getAerodynamicCoefficientIndependentVariable(
 
         break;
     }
+    case airspeed_dependent:
+        currentIndependentVariable = getCurrentAirspeed( );
+        break;
+    case knudsen_number_dependent:
+        currentIndependentVariable = getCurrentKnudsenNumber( );
+        break;
     default:
         if( customCoefficientDependencies_.count( independentVariableType ) == 0 )
         {
