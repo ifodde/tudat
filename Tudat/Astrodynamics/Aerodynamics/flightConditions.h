@@ -223,6 +223,19 @@ public:
     {
         return currentTime_;
     }
+
+    double getCurrentKnudsenNumber( )
+    {
+        double mach = getCurrentMachNumber();
+        double velocity = getCurrentAirspeed();
+        double refLength = 5.0;
+        double density = getCurrentDensity();
+        double viscosity = 0.000035;
+        double specHeatRatio = 1.3;
+        double Reynolds = density*velocity*refLength/viscosity;
+        return mach/Reynolds * sqrt(specHeatRatio*3.14/2);
+    }
+
     //! Function to return atmosphere model object
     /*!
      *  Function to return atmosphere model object
