@@ -160,6 +160,12 @@ std::string getDependentVariableName( const PropagationDependentVariables propag
     case modified_equinocial_state_dependent_variable:
         variableName = "Modified equinoctial elements ";
         break;
+    case knudsen_number_dependent_variable:
+        variableName = "Knudsen number  ";
+        break;
+    case bcbf_state_dependent_variable:
+        variableName = "Body centered body frame state  ";
+        break;
     default:
         std::string errorMessage = "Error, dependent variable " +
                 std::to_string( propagationDependentVariables ) +

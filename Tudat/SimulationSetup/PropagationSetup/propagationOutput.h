@@ -305,6 +305,17 @@ std::pair< boost::function< Eigen::VectorXd( ) >, int > getVectorDependentVariab
         }
         break;
     }
+    case bcbf_state_dependent_variable:
+        if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+        {
+            std::string errorMessage = "Error, no flight conditions available when requesting bcbf output of " +
+                    bodyWithProperty + "w.r.t." + secondaryBody;
+            throw std::runtime_error( errorMessage );
+        }
+        variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentBodyCenteredBodyFixedState,
+                                        bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+        parameterSize = 6;
+        break;
     case aerodynamic_force_coefficients_dependent_variable:
     {
         if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
@@ -705,6 +716,16 @@ boost::function< double( ) > getDoubleDependentVariableFunction(
                 throw std::runtime_error( errorMessage );
             }
             variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentAltitude,
+                                            bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+            break;
+        case knudsen_number_dependent_variable:
+            if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+            {
+                std::string errorMessage = "Error, no flight conditions available when requesting knudsen output of " +
+                        bodyWithProperty + "w.r.t." + secondaryBody;
+                throw std::runtime_error( errorMessage );
+            }
+            variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentKnudsenNumber,
                                             bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
             break;
         case airspeed_dependent_variable:

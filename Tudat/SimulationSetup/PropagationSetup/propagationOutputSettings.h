@@ -93,7 +93,9 @@ enum PropagationDependentVariables
     single_torque_dependent_variable = 30,
     body_fixed_groundspeed_based_velocity_variable = 31,
     keplerian_state_dependent_variable = 32,
-    modified_equinocial_state_dependent_variable = 33
+    modified_equinocial_state_dependent_variable = 33,
+    knudsen_number_dependent_variable = 34,
+    bcbf_state_dependent_variable = 35
 };
 
 
