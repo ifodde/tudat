@@ -208,6 +208,43 @@ public:
                     getTemperature( altitude, longitude, latitude, time ), ratioOfSpecificHeats_,
                     specificGasConstant_ );
     }
+    //! Get local weighted average collision diameter.
+    /*!
+    * Returns the local weighted average collision diameter using the number densities as weights.
+    * \param altitude Altitude at which average collision diameter is to be computed [m].
+    * \param longitude Longitude at which average collision diameter is to be computed [rad].
+    * \param latitude Latitude at which average collision diameter is to be computed [rad].
+    * \param time Time at which average collision diameter is to be computed (seconds since J2000).
+    * \return weighted average collision diameter.
+    */
+    double getWeightedAverageCollisionDiameter( const double altitude, const double longitude,
+                          const double latitude, const double time )
+    {
+        TUDAT_UNUSED_PARAMETER( altitude );
+        TUDAT_UNUSED_PARAMETER( longitude );
+        TUDAT_UNUSED_PARAMETER( latitude );
+        TUDAT_UNUSED_PARAMETER( time );
+        return 330E-12;
+    }
+
+    //! Get local mean molar mass.
+    /*!
+    * Returns the local mean molar mass in kg/mol.
+    * \param altitude Altitude at which mean molar mass is to be computed [m].
+    * \param longitude Longitude at which mean molar mass  is to be computed [rad].
+    * \param latitude Latitude at which mean molar mass  is to be computed [rad].
+    * \param time Time at which mean molar mass  is to be computed (seconds since J2000).
+    * \return mean molar mass.
+    */
+    double getMeanMolarMass( const double altitude, const double longitude,
+                          const double latitude, const double time )
+    {
+        TUDAT_UNUSED_PARAMETER( altitude );
+        TUDAT_UNUSED_PARAMETER( longitude );
+        TUDAT_UNUSED_PARAMETER( latitude );
+        TUDAT_UNUSED_PARAMETER( time );
+        return 44E-3;
+    }
 
 protected:
 

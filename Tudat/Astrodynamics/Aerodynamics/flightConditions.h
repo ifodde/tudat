@@ -76,7 +76,7 @@ public:
      *  \param controlSurfaceDeflectionFunction Function returning control surface deflection, with input the control
      *  surface identifier.
      */
-    FlightConditions( const boost::shared_ptr< aerodynamics::AtmosphereModel > atmosphereModel,
+    FlightConditions(const boost::shared_ptr< aerodynamics::AtmosphereModel > atmosphereModel,
                       const boost::shared_ptr< basic_astrodynamics::BodyShapeModel > shapeModel,
                       const boost::shared_ptr< AerodynamicCoefficientInterface >
                       aerodynamicCoefficientInterface,
@@ -84,7 +84,7 @@ public:
                       aerodynamicAngleCalculator =
             boost::shared_ptr< reference_frames::AerodynamicAngleCalculator >( ),
                       const boost::function< double( const std::string& )> controlSurfaceDeflectionFunction =
-            boost::function< double( const std::string& )>( ) );
+            boost::function< double( const std::string& )>( ));
 
     //! Function to update all flight conditions.
     /*!
@@ -232,26 +232,21 @@ public:
     {
         const double AVOGADRO_CONSTANT = 6.02214129E23;
         double characteristicLength = 5.0;
-        boost::shared_ptr< aerodynamics::NRLMSISE00Atmosphere > earthAtmosphereModel =
-                boost::dynamic_pointer_cast< aerodynamics::NRLMSISE00Atmosphere >( atmosphereModel_ );
-        double molMass = earthAtmosphereModel->getMeanMolarMass(scalarFlightConditions_.at( altitude_flight_condition ),
+
+
+        boost::shared_ptr< aerodynamics::AtmosphereModel > Atmosphere = atmosphereModel_;
+
+        double molMass = Atmosphere->getMeanMolarMass(scalarFlightConditions_.at( altitude_flight_condition ),
                                                             scalarFlightConditions_.at( longitude_flight_condition ),
-                                                            scalarFlightConditions_.at( latitude_flight_condition ), currentTime_);
-        double colDiameter = earthAtmosphereModel->getWeightedAverageCollisionDiameter(scalarFlightConditions_.at( altitude_flight_condition ),
+                                                            scalarFlightConditions_.at( latitude_flight_condition ), currentTime_);;
+        double colDiameter = Atmosphere->getWeightedAverageCollisionDiameter(scalarFlightConditions_.at( altitude_flight_condition ),
                                                                                    scalarFlightConditions_.at( longitude_flight_condition ),
                                                                                    scalarFlightConditions_.at( latitude_flight_condition ), currentTime_);
+
         double Density = getCurrentDensity();
         double particleMass = (molMass / 1000.0) / AVOGADRO_CONSTANT;
         return particleMass / (std::sqrt(2.0) *mathematical_constants::PI *
                             std::pow(colDiameter,2.0) * Density) / characteristicLength;
-        //double mach = getCurrentMachNumber();
-        //double velocity = getCurrentAirspeed();
-        //double refLength = 5.0;
-        //double density = getCurrentDensity();
-        //double viscosity = 0.000035;
-        //double specHeatRatio = 1.3;
-        //double Reynolds = density*velocity*refLength/viscosity;
-        //return mach/Reynolds * sqrt(specHeatRatio*3.14/2);
     }
 
     //! Function to return atmosphere model object
