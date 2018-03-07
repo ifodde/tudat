@@ -25,6 +25,7 @@
 #include "Tudat/Astrodynamics/ReferenceFrames/aerodynamicAngleCalculator.h"
 #include "Tudat/Basics/basicTypedefs.h"
 #include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
+#include "Tudat/Astrodynamics/SystemModels/vehicleSystems.h"
 
 
 namespace tudat
@@ -80,6 +81,7 @@ public:
                       const boost::shared_ptr< basic_astrodynamics::BodyShapeModel > shapeModel,
                       const boost::shared_ptr< AerodynamicCoefficientInterface >
                       aerodynamicCoefficientInterface,
+                      const boost::shared_ptr< system_models::VehicleSystems > vehicleSystem,
                       const boost::shared_ptr< reference_frames::AerodynamicAngleCalculator >
                       aerodynamicAngleCalculator =
             boost::shared_ptr< reference_frames::AerodynamicAngleCalculator >( ),
@@ -231,7 +233,8 @@ public:
     double getCurrentKnudsenNumber( )
     {
         const double AVOGADRO_CONSTANT = 6.02214129E23;
-        double characteristicLength = 5.0;
+
+        double characteristicLength = vehicleSystem_->getRefLength();
 
 
         boost::shared_ptr< aerodynamics::AtmosphereModel > Atmosphere = atmosphereModel_;
@@ -573,6 +576,8 @@ private:
     //! List of independent variables of the control surface aerodynamic coefficient interface, with map key
     //! control surface identifiers.
     std::map< std::string, std::vector< double > > controlSurfaceAerodynamicCoefficientIndependentVariables_;
+
+    boost::shared_ptr< system_models::VehicleSystems > vehicleSystem_;
 };
 
 } // namespace aerodynamics

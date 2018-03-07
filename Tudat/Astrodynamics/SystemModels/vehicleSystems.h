@@ -37,7 +37,7 @@ public:
      * Constructor
      * \param dryMass Total dry mass of the vehicle (not defined; NaN by default).
      */
-    VehicleSystems( const double dryMass = TUDAT_NAN ):
+    VehicleSystems( const double dryMass = TUDAT_NAN):
         dryMass_( dryMass ){ }
 
     //! Destructor
@@ -146,6 +146,26 @@ public:
         return wallEmissivity_;
     }
 
+    void setRefLength(const double refLength )
+    {
+        refLength_ = refLength;
+    }
+
+    void setRefArea(const double refArea )
+    {
+        refArea_ = refArea;
+    }
+
+    double getRefLength( )
+    {
+        return refLength_;
+    }
+
+    double getRefArea( )
+    {
+        return refArea_;
+    }
+
 private:
 
     //! Named list of engine models in the vehicle
@@ -162,6 +182,10 @@ private:
 
     //! Wall emissivity of the vehicle (used for heating computations)
     double wallEmissivity_;
+
+    double refLength_;
+
+    double refArea_;
 };
 
 

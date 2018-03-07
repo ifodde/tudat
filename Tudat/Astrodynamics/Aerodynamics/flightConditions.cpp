@@ -27,17 +27,18 @@ namespace aerodynamics
 {
 
 //! Constructor, sets objects and functions from which relevant environment and state variables are retrieved.
-FlightConditions::FlightConditions(
-        const boost::shared_ptr< aerodynamics::AtmosphereModel > atmosphereModel,
+FlightConditions::FlightConditions(const boost::shared_ptr< aerodynamics::AtmosphereModel > atmosphereModel,
         const boost::shared_ptr< basic_astrodynamics::BodyShapeModel > shapeModel,
         const boost::shared_ptr< AerodynamicCoefficientInterface > aerodynamicCoefficientInterface,
+        const boost::shared_ptr< system_models::VehicleSystems > vehicleSystem,
         const boost::shared_ptr< reference_frames::AerodynamicAngleCalculator > aerodynamicAngleCalculator,
-        const boost::function< double( const std::string& ) > controlSurfaceDeflectionFunction ):
+        const boost::function< double( const std::string& ) > controlSurfaceDeflectionFunction):
     atmosphereModel_( atmosphereModel ),
     shapeModel_( shapeModel ),
     aerodynamicCoefficientInterface_( aerodynamicCoefficientInterface ),
     aerodynamicAngleCalculator_( aerodynamicAngleCalculator ),
     controlSurfaceDeflectionFunction_( controlSurfaceDeflectionFunction ),
+    vehicleSystem_(vehicleSystem),
     currentTime_( TUDAT_NAN )
 {
     // Check if given body shape is an oblate spheroid and set geodetic latitude function if so

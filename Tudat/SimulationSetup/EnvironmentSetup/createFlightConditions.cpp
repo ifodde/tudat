@@ -67,6 +67,14 @@ boost::shared_ptr< aerodynamics::FlightConditions > createFlightConditions(
                     " has no aerodynamic coefficients." );
     }
 
+    if( bodyWithFlightConditions->getVehicleSystems( ) == NULL )
+    {
+        throw std::runtime_error(
+                    "Error when making flight conditions, body " + nameOfBodyUndergoingAcceleration +
+                    " has no vehicle system." );
+    }
+
+
 
     // Create function to rotate state from intertial to body-fixed frame.
     boost::function< Eigen::Quaterniond( ) > rotationToFrameFunction =
@@ -117,8 +125,8 @@ boost::shared_ptr< aerodynamics::FlightConditions > createFlightConditions(
     boost::shared_ptr< aerodynamics::FlightConditions > flightConditions =
             boost::make_shared< aerodynamics::FlightConditions >(
                 centralBody->getAtmosphereModel( ), centralBody->getShapeModel( ),
-                bodyWithFlightConditions->getAerodynamicCoefficientInterface( ), aerodynamicAngleCalculator,
-                controlSurfaceDeflectionFunction );
+                bodyWithFlightConditions->getAerodynamicCoefficientInterface( ), bodyWithFlightConditions->getVehicleSystems( ),
+                aerodynamicAngleCalculator, controlSurfaceDeflectionFunction );
 
     return flightConditions;
 
