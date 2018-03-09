@@ -26,6 +26,7 @@
 #include "Tudat/Basics/utilityMacros.h"
 
 #include "Tudat/Astrodynamics/Aerodynamics/standardAtmosphere.h"
+#include "Tudat/Astrodynamics/Aerodynamics/nrlmsise00Atmosphere.h"
 #include "Tudat/Astrodynamics/Aerodynamics/aerodynamics.h"
 #include "Tudat/Astrodynamics/BasicAstrodynamics/physicalConstants.h"
 #include "Tudat/Mathematics/Interpolators/cubicSplineInterpolator.h"
@@ -57,12 +58,16 @@ public:
      *  \param ratioOfSpecificHeats The constant ratio of specific heats of the air
      */
     TabulatedAtmosphere( const std::string& atmosphereTableFile,
+                         const std::string& speciesTableFile,
                          const double specificGasConstant = physical_constants::SPECIFIC_GAS_CONSTANT_AIR,
                          const double ratioOfSpecificHeats = 1.4 )
-        : atmosphereTableFile_( atmosphereTableFile ), specificGasConstant_( specificGasConstant ),
+        : atmosphereTableFile_( atmosphereTableFile ), speciesTableFile_(speciesTableFile), specificGasConstant_( specificGasConstant ),
           ratioOfSpecificHeats_( ratioOfSpecificHeats )
     {
+        GasComponentProperties gasProperties;
+        gasComponentProperties_ = gasProperties;
         initialize( atmosphereTableFile_ );
+        initializeSpecies( speciesTableFile_ );
     }
 
     //! Get atmosphere table file name.
@@ -84,7 +89,12 @@ public:
      * Returns the ratio of specific hears of the air, its value is assumed constant,.
      * \return Ratio of specific heats exponential atmosphere.
      */
-    double getRatioOfSpecificHeats( ) { return ratioOfSpecificHeats_; }
+    double getRatioOfSpecificHeats(const double altitude, const double longitude = 0.0,
+                                   const double latitude = 0.0, const double time = 0.0 )
+    {
+        computeProperties(altitude);
+        return ratioOfSpecificHeats_;
+    }
 
     //! Get local density.
     /*!
@@ -167,14 +177,82 @@ public:
         TUDAT_UNUSED_PARAMETER( longitude );
         TUDAT_UNUSED_PARAMETER( latitude );
         TUDAT_UNUSED_PARAMETER( time );
+        computeProperties(altitude);
         return computeSpeedOfSound(
                     getTemperature( altitude, longitude, latitude, time ), ratioOfSpecificHeats_,
                     specificGasConstant_ );
+    }
+    //! Get local weighted average collision diameter.
+    /*!
+    * Returns the local weighted average collision diameter using the number densities as weights.
+    * \param altitude Altitude at which average collision diameter is to be computed [m].
+    * \param longitude Longitude at which average collision diameter is to be computed [rad].
+    * \param latitude Latitude at which average collision diameter is to be computed [rad].
+    * \param time Time at which average collision diameter is to be computed (seconds since J2000).
+    * \return weighted average collision diameter.
+    */
+    double getWeightedAverageCollisionDiameter( const double altitude, const double longitude,
+                          const double latitude, const double time )
+    {
+        TUDAT_UNUSED_PARAMETER( longitude );
+        TUDAT_UNUSED_PARAMETER( latitude );
+        TUDAT_UNUSED_PARAMETER( time );
+        computeProperties(altitude);
+        return weightedAverageCollisionDiameter_;
+    }
+
+    //! Get local mean molar mass.
+    /*!
+    * Returns the local mean molar mass in kg/mol.
+    * \param altitude Altitude at which mean molar mass is to be computed [m].
+    * \param longitude Longitude at which mean molar mass  is to be computed [rad].
+    * \param latitude Latitude at which mean molar mass  is to be computed [rad].
+    * \param time Time at which mean molar mass  is to be computed (seconds since J2000).
+    * \return mean molar mass.
+    */
+    double getMeanMolarMass( const double altitude, const double longitude,
+                          const double latitude, const double time )
+    {
+        TUDAT_UNUSED_PARAMETER( longitude );
+        TUDAT_UNUSED_PARAMETER( latitude );
+        TUDAT_UNUSED_PARAMETER( time );
+        computeProperties(altitude);
+        return meanMolarMass_;
     }
 
 protected:
 
 private:
+
+    std::vector< double > CO2Data_;
+    std::vector< double > N2Data_;
+    std::vector< double > ArData_;
+    std::vector< double > COData_;
+    std::vector< double > OData_;
+    std::vector< double > O2Data_;
+    std::vector< double > O3Data_;
+    std::vector< double > HData_;
+    std::vector< double > H2Data_;
+    std::vector< double > numberDensities_;
+
+    //! Current average number density (M-3)
+    double averageNumberDensity_;
+
+    //! Current weighted average of the collision diameter using the number density as weights in (M)
+    double weightedAverageCollisionDiameter_;
+
+    //! mean molar mass (kg/mole)
+    double meanMolarMass_;
+
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForCO2_;
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForN2_;
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForAr_;
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForCO_;
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForO_;
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForO2_;
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForO3_;
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForH_;
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForH2_;
 
     //! Initialize atmosphere table reader.
     /*!
@@ -182,6 +260,13 @@ private:
      * \param atmosphereTableFile The name of the atmosphere table.
      */
     void initialize( const std::string& atmosphereTableFile );
+
+    void initializeSpecies( const std::string& speciesTableFile );
+
+    void computeProperties(const double altitude);
+
+    //! Data structure that contains the colision diameter
+    GasComponentProperties gasComponentProperties_;
 
     //! The file name of the atmosphere table.
     /*!
@@ -191,11 +276,15 @@ private:
      */
     std::string atmosphereTableFile_;
 
+    std::string speciesTableFile_;
+
     //! Vector containing the altitude.
     /*!
      *  Vector containing the altitude.
      */
     std::vector< double > altitudeData_;
+
+    std::vector< double > specificHeatRatioData_;
 
     //! Vector containing the density data as a function of the altitude.
     /*!
@@ -232,6 +321,8 @@ private:
      *  Cubic spline interpolation for temperature.
      */
     interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForTemperature_;
+
+    interpolators::CubicSplineInterpolatorDoublePointer cubicSplineInterpolationForHeatRatio_;
 
     //! Specific gas constant.
     /*!

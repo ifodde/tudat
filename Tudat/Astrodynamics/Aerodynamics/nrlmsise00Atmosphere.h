@@ -56,9 +56,11 @@ struct GasComponentProperties
     GasComponentProperties( ):
     diameterArgon(340E-12), diameterAtomicHydrogen(260E-12), diameterHelium(256E-12),
       diameterNitrogen(370E-12), diameterOxygen(358E-12), diameterAtomicNitrogen(290E-12),
-      diameterAtomicOxygen(280E-12), molarMassArgon(39.948E-3), molarMassAtomicHydrogen(1.008E-3),
+      diameterAtomicOxygen(280E-12), diameterCarbonDiOxide(407E-12), diameterCarbonMonoOxide(376E-12),
+      diameterOzon(411E-12), diameterHydrogen(293E-12), molarMassArgon(39.948E-3), molarMassAtomicHydrogen(1.008E-3),
       molarMassHelium(4.002602E-3), molarMassNitrogen(2.0*14.007E-3), molarMassOxygen(2.0*15.999E-3),
-      molarMassAtomicNitrogen(14.007E-3), molarMassAtomicOxygen(15.999E-3)
+      molarMassAtomicNitrogen(14.007E-3), molarMassAtomicOxygen(15.999E-3), molarMassCarbonDiOxide(44.01E-3),
+      molarMassCarbonMonoOxide(28.01E-3), molarMassOzon(48.0E-3), molarMassHydrogen(2.016E-3)
     { }
 
     //! Molecular colision diameter of Argon in m
@@ -82,6 +84,18 @@ struct GasComponentProperties
     //! Molecular colision diameter of Atomic Oxygen in m
     double diameterAtomicOxygen;
 
+    //! Molecular colision diameter of CO2 in m
+    double diameterCarbonDiOxide;
+
+    //! Molecular colision diameter of CO in m
+    double diameterCarbonMonoOxide;
+
+    //! Molecular colision diameter of O3 in m
+    double diameterOzon;
+
+    //! Molecular colision diameter of H2 in m
+    double diameterHydrogen;
+
 
     //! molar mass of Argon in kg/mole
     double molarMassArgon;
@@ -103,8 +117,19 @@ struct GasComponentProperties
 
     //! Molar mass of Atomic Oxygen in kg/mole
     double molarMassAtomicOxygen;
-};
 
+    //! Molar mass of CO2 in kg/mole
+    double molarMassCarbonDiOxide;
+
+    //! Molar mass of CO in kg/mole
+    double molarMassCarbonMonoOxide;
+
+    //! Molar mass of O3 in kg/mole
+    double molarMassOzon;
+
+    //! Molar mass of H2 in kg/mole
+    double molarMassHydrogen;
+};
 
 //! Struct for Solar Activity data.
 /*!
@@ -256,6 +281,12 @@ class NRLMSISE00Atmosphere : public AtmosphereModel
     {
         computeProperties( altitude, longitude, latitude, time );
         return density_;
+    }
+
+    double getRatioOfSpecificHeats( const double altitude, const double longitude,
+                       const double latitude, const double time )
+    {
+        return specificHeatRatio_;
     }
 
     //! Get local pressure.

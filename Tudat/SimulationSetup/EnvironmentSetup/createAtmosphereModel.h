@@ -294,8 +294,9 @@ public:
      *  four columns of atmospheric data with altitude, density, pressure and temperature,
      *  respectively.
      */
-    TabulatedAtmosphereSettings( const std::string& atmosphereFile ):
-        AtmosphereSettings( tabulated_atmosphere ), atmosphereFile_( atmosphereFile ){ }
+    TabulatedAtmosphereSettings( const std::string& atmosphereFile, const std::string& speciesFile ):
+        AtmosphereSettings( tabulated_atmosphere ), atmosphereFile_( atmosphereFile ),
+        speciesFile_(speciesFile) { }
 
     //! Function to return file containing atmospheric properties.
     /*!
@@ -303,6 +304,7 @@ public:
      *  \return Filename containing atmospheric properties.
      */
     std::string getAtmosphereFile( ){ return atmosphereFile_; }
+    std::string getSpeciesFile( ){ return speciesFile_; }
 
 private:
 
@@ -313,6 +315,7 @@ private:
      *  respectively.
      */
     std::string atmosphereFile_;
+    std::string speciesFile_;
 };
 
 //! Function to create a wind model.

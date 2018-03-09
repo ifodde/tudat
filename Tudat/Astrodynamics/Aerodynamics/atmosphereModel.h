@@ -139,6 +139,12 @@ public:
         return 0;
     }
 
+    virtual double getRatioOfSpecificHeats(const double altitude, const double longitude,
+                                           const double latitude, const double time )
+    {
+        return 1.4;
+    }
+
 protected:
 
     //! Model describing the wind velocity vector of the atmosphere

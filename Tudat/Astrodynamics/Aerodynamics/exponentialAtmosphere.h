@@ -119,7 +119,15 @@ public:
      * due to the assumption of constant atmospheric composition.
      * \return Ratio of specific heats exponential atmosphere.
      */
-    double getRatioOfSpecificHeats( ) { return ratioOfSpecificHeats_; }
+    double getRatioOfSpecificHeats( const double altitude, const double longitude,
+                          const double latitude, const double time )
+    {
+        TUDAT_UNUSED_PARAMETER( altitude );
+        TUDAT_UNUSED_PARAMETER( longitude );
+        TUDAT_UNUSED_PARAMETER( latitude );
+        TUDAT_UNUSED_PARAMETER( time );
+        return 1.4;
+    }
 
     //! Get local density.
     /*!
@@ -245,6 +253,7 @@ public:
         TUDAT_UNUSED_PARAMETER( time );
         return 44E-3;
     }
+
 
 protected:
 

@@ -241,7 +241,7 @@ public:
 
         double molMass = Atmosphere->getMeanMolarMass(scalarFlightConditions_.at( altitude_flight_condition ),
                                                             scalarFlightConditions_.at( longitude_flight_condition ),
-                                                            scalarFlightConditions_.at( latitude_flight_condition ), currentTime_);;
+                                                            scalarFlightConditions_.at( latitude_flight_condition ), currentTime_);
         double colDiameter = Atmosphere->getWeightedAverageCollisionDiameter(scalarFlightConditions_.at( altitude_flight_condition ),
                                                                                    scalarFlightConditions_.at( longitude_flight_condition ),
                                                                                    scalarFlightConditions_.at( latitude_flight_condition ), currentTime_);
@@ -250,6 +250,14 @@ public:
         double particleMass = (molMass / 1000.0) / AVOGADRO_CONSTANT;
         return particleMass / (std::sqrt(2.0) *mathematical_constants::PI *
                             std::pow(colDiameter,2.0) * Density) / characteristicLength;
+    }
+
+    double getRatioOfSpecificHeats( )
+    {
+        boost::shared_ptr< aerodynamics::AtmosphereModel > Atmosphere = atmosphereModel_;
+        return Atmosphere->getRatioOfSpecificHeats(scalarFlightConditions_.at( altitude_flight_condition ),
+                                                      scalarFlightConditions_.at( longitude_flight_condition ),
+                                                      scalarFlightConditions_.at( latitude_flight_condition ), currentTime_);
     }
 
     //! Function to return atmosphere model object

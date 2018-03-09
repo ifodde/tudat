@@ -525,18 +525,19 @@ double computeEquilibriumHeatflux( const boost::function< double( const double )
 }
 
 //! Function to compute the heat flux experienced by a vehicle, assuming an equlibrium wall temperature.
-double computeEquilibriumFayRiddellHeatFlux( const double airDensity,
+double computeEquilibriumFayRiddellHeatFlux(const double airDensity,
                                              const double airSpeed,
                                              const double airTemperature,
                                              const double machNumber,
                                              const double noseRadius,
-                                             const double wallEmissivity )
+                                             const double ratioOfSpecificHeats,
+                                             const double wallEmissivity)
 
 {
 
     // Compute adiabatic wall temperature.
     double adiabaticWallTemperature
-            = computeAdiabaticWallTemperature( airTemperature , machNumber );
+            = computeAdiabaticWallTemperature( airTemperature , machNumber, ratioOfSpecificHeats, 0.8 );
 
     boost::function< double( const double ) > heatTransferFunction = boost::bind(
                 &computeFayRiddellHeatFlux, airDensity, airSpeed, airTemperature, noseRadius, _1 );

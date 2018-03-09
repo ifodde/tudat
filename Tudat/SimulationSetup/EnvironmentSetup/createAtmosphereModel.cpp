@@ -108,7 +108,7 @@ boost::shared_ptr< aerodynamics::AtmosphereModel > createAtmosphereModel(
         {
             // Create and initialize tabulatedl atmosphere model.
             atmosphereModel = boost::make_shared< TabulatedAtmosphere >(
-                        tabulatedAtmosphereSettings->getAtmosphereFile( ) );
+                        tabulatedAtmosphereSettings->getAtmosphereFile( ),  tabulatedAtmosphereSettings->getSpeciesFile( ));
         }
         break;
     }

@@ -82,7 +82,7 @@ double computeEquilibriumFayRiddellHeatFluxFromProperties(
     return aerodynamics::computeEquilibriumFayRiddellHeatFlux(
                 flightConditions->getCurrentDensity( ), flightConditions->getCurrentAirspeed( ),
                 flightConditions->getCurrentFreestreamTemperature( ), flightConditions->getCurrentMachNumber( ),
-                vehicleSystems->getNoseRadius( ), vehicleSystems->getWallEmissivity( ) );
+                vehicleSystems->getNoseRadius( ), flightConditions->getRatioOfSpecificHeats(), vehicleSystems->getWallEmissivity( ) );
 }
 
 

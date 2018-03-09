@@ -446,11 +446,12 @@ double computeEquilibriumHeatflux( const boost::function< double( const double )
  * \param wallEmissivity Wall emissivity of the vehicle.
  * \return Convective heat flux experienced by the vehicle.
  */
-double computeEquilibriumFayRiddellHeatFlux( const double airDensity,
+double computeEquilibriumFayRiddellHeatFlux(const double airDensity,
                                              const double airSpeed,
                                              const double airTemperature,
                                              const double machNumber,
                                              const double noseRadius,
+                                             const double ratioOfSpecificHeats,
                                              const double wallEmissivity = 0.80 );
 
 static const double FAY_RIDDEL_HEAT_FLUX_CONSTANT = 3.53E-4;
@@ -483,7 +484,7 @@ double computeFayRiddellHeatFlux( const double airDensity,
  * \return Adiabatic wall temperature experienced by the vehicle.
  */
 double computeAdiabaticWallTemperature(
-        const double airTemperature, const double machNumber, const double ratioSpecificHeats = 1.4,
+        const double airTemperature, const double machNumber, const double ratioSpecificHeats = 1.3,
         const double recoveryFactor = 0.845 );
 
 } // namespace aerodynamics
