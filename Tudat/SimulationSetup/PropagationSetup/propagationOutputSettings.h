@@ -95,7 +95,9 @@ enum PropagationDependentVariables
     keplerian_state_dependent_variable = 32,
     modified_equinocial_state_dependent_variable = 33,
     knudsen_number_dependent_variable = 34,
-    bcbf_state_dependent_variable = 35
+    bcbf_state_dependent_variable = 35,
+    sutton_graves_conv_heat_flux = 36,
+    tauber_radiative_heat_flux = 37
 };
 
 

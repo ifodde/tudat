@@ -15,6 +15,7 @@
 
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <math.h>
 
 #include "Tudat/Astrodynamics/Aerodynamics/trimOrientation.h"
 #include "Tudat/Astrodynamics/Aerodynamics/aerodynamicCoefficientInterface.h"
@@ -26,6 +27,8 @@
 #include "Tudat/Basics/basicTypedefs.h"
 #include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
 #include "Tudat/Astrodynamics/SystemModels/vehicleSystems.h"
+#include <Tudat/Mathematics/Interpolators/cubicSplineInterpolator.h>
+#include <Tudat/Mathematics/Interpolators/createInterpolator.h>
 
 
 namespace tudat
@@ -258,6 +261,87 @@ public:
         return Atmosphere->getRatioOfSpecificHeats(scalarFlightConditions_.at( altitude_flight_condition ),
                                                       scalarFlightConditions_.at( longitude_flight_condition ),
                                                       scalarFlightConditions_.at( latitude_flight_condition ), currentTime_);
+    }
+
+    double getSuttonGravesConvHeatFlux( )
+    {
+        double velocity = getCurrentAirspeed();
+        double density = getCurrentDensity();
+        double noseRadius = vehicleSystem_->getNoseRadius();
+        double k = 1.83e-4;
+
+        double convectiveHeatFlux = k*std::sqrt(density/noseRadius)*std::pow(velocity,3.0);
+
+        return convectiveHeatFlux;
+
+    }
+
+    double getTauberRadHeatFlux( )
+    {
+        std::vector<double> velocityFunction(37);
+        std::vector<double> heatingFunction(37);
+        velocityFunction[0]  = 6000;   heatingFunction[0]  = 0.2;
+        velocityFunction[1]  = 6150;   heatingFunction[1]  = 1.0;
+        velocityFunction[2]  = 6300;   heatingFunction[2]  = 1.95;
+        velocityFunction[3]  = 6500;   heatingFunction[3]  = 3.42;
+        velocityFunction[4]  = 6700;   heatingFunction[4]  = 5.1;
+        velocityFunction[5]  = 6900;   heatingFunction[5]  = 7.1;
+        velocityFunction[6]  = 7000;   heatingFunction[6]  = 8.1;
+        velocityFunction[7]  = 7200;   heatingFunction[7]  = 10.2;
+        velocityFunction[8]  = 7400;   heatingFunction[8]  = 12.5;
+        velocityFunction[9]  = 7600;   heatingFunction[9]  = 14.8;
+        velocityFunction[10] = 7800;   heatingFunction[10] = 17.1;
+        velocityFunction[11] = 8000;   heatingFunction[11] = 19.2;
+        velocityFunction[12] = 8200;   heatingFunction[12] = 21.4;
+        velocityFunction[13] = 8400;   heatingFunction[13] = 24.1;
+        velocityFunction[14] = 8600;   heatingFunction[14] = 26.0;
+        velocityFunction[15] = 8800;   heatingFunction[15] = 28.9;
+        velocityFunction[16] = 9000;   heatingFunction[16] = 32.8;
+        velocityFunction[17] = 9200; 	heatingFunction[17] = 35.138107;
+        velocityFunction[18] = 9400; 	heatingFunction[18] = 38.156042;
+        velocityFunction[19] = 9600; 	heatingFunction[19] = 41.269273;
+        velocityFunction[20] = 9800; 	heatingFunction[20] = 44.477800;
+        velocityFunction[21] = 10000; 	heatingFunction[21] = 47.781623;
+        velocityFunction[22] = 10200; 	heatingFunction[22] = 51.180743;
+        velocityFunction[23] = 10400; 	heatingFunction[23] = 54.675159;
+        velocityFunction[24] = 10600; 	heatingFunction[24] = 58.264871;
+        velocityFunction[25] = 10800; 	heatingFunction[25] = 61.949880;
+        velocityFunction[26] = 11000; 	heatingFunction[26] = 65.730185;
+        velocityFunction[27] = 11200; 	heatingFunction[27] = 69.605786;
+        velocityFunction[28] = 11400; 	heatingFunction[28] = 73.576683;
+        velocityFunction[29] = 11600; 	heatingFunction[29] = 77.642877;
+        velocityFunction[30] = 11800; 	heatingFunction[30] = 81.804367;
+        velocityFunction[31] = 12000; 	heatingFunction[31] = 86.061153;
+        velocityFunction[32] = 12200; 	heatingFunction[32] = 90.413235;
+        velocityFunction[33] = 12400; 	heatingFunction[33] = 94.860614;
+        velocityFunction[34] = 12600; 	heatingFunction[34] = 99.403289;
+        velocityFunction[35] = 12800; 	heatingFunction[35] = 104.041260;
+        velocityFunction[36] = 13000; 	heatingFunction[36] = 108.774528;
+
+        std::map< double, double > heatingMap;
+        std::transform( velocityFunction.begin(), velocityFunction.end(), heatingFunction.begin(),
+               std::inserter(heatingMap, heatingMap.end() ), std::make_pair<double const&,double const&> );
+
+        boost::shared_ptr< interpolators::InterpolatorSettings > interpolatorSettings =
+            boost::make_shared< interpolators::InterpolatorSettings >( interpolators::cubic_spline_interpolator );
+
+        boost::shared_ptr< interpolators::OneDimensionalInterpolator< double, double > > interpolator =
+                interpolators::createOneDimensionalInterpolator(
+                    heatingMap, interpolatorSettings );
+
+        double radiativeConstant_a = 0.526;
+        double radiativeConstant_b = 1.19;
+        double radiativeConstant_C = 2.35e8;
+
+        double airspeed = getCurrentAirspeed();
+        double density = getCurrentDensity();
+        double noseRadius = vehicleSystem_->getNoseRadius();
+
+        double radiativeHeatFlux = radiativeConstant_C * std::pow(noseRadius,radiativeConstant_a) *
+                                std::pow(density,radiativeConstant_b) * interpolator->interpolate(airspeed);
+
+        return radiativeHeatFlux;
+
     }
 
     //! Function to return atmosphere model object

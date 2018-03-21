@@ -249,6 +249,12 @@ int getDependentVariableSize(
     case bcbf_state_dependent_variable:
         variableSize = 6;
         break;
+    case sutton_graves_conv_heat_flux:
+        variableSize = 1;
+        break;
+    case tauber_radiative_heat_flux:
+        variableSize = 1;
+        break;
     default:
         std::string errorMessage = "Error, did not recognize dependent variable size of type: " +
                 std::to_string( dependentVariableSettings );

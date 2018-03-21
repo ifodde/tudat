@@ -728,6 +728,38 @@ boost::function< double( ) > getDoubleDependentVariableFunction(
             variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentKnudsenNumber,
                                             bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
             break;
+        case sutton_graves_conv_heat_flux:
+            if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+            {
+                std::string errorMessage = "Error, no flight conditions available when requesting heating output of " +
+                        bodyWithProperty + "w.r.t." + secondaryBody;
+                throw std::runtime_error( errorMessage );
+            }
+            if( bodyMap.at( bodyWithProperty )->getVehicleSystems() == NULL )
+            {
+                std::string errorMessage = "Error, no vehicle systems available when requesting heating output of " +
+                        bodyWithProperty + "w.r.t." + secondaryBody;
+                throw std::runtime_error( errorMessage );
+            }
+            variableFunction = boost::bind( &aerodynamics::FlightConditions::getSuttonGravesConvHeatFlux,
+                                            bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+            break;
+        case tauber_radiative_heat_flux:
+            if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+            {
+                std::string errorMessage = "Error, no flight conditions available when requesting heating output of " +
+                        bodyWithProperty + "w.r.t." + secondaryBody;
+                throw std::runtime_error( errorMessage );
+            }
+            if( bodyMap.at( bodyWithProperty )->getVehicleSystems() == NULL )
+            {
+                std::string errorMessage = "Error, no vehicle systems available when requesting heating output of " +
+                        bodyWithProperty + "w.r.t." + secondaryBody;
+                throw std::runtime_error( errorMessage );
+            }
+            variableFunction = boost::bind( &aerodynamics::FlightConditions::getTauberRadHeatFlux,
+                                            bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+            break;
         case airspeed_dependent_variable:
             if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
             {

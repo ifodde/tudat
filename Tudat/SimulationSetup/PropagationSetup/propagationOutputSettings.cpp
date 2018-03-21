@@ -166,6 +166,12 @@ std::string getDependentVariableName( const PropagationDependentVariables propag
     case bcbf_state_dependent_variable:
         variableName = "Body centered body frame state  ";
         break;
+    case sutton_graves_conv_heat_flux:
+        variableName = "Convective Heat Flux ";
+        break;
+    case tauber_radiative_heat_flux:
+        variableName = "Radiative Heat Flux ";
+        break;
     default:
         std::string errorMessage = "Error, dependent variable " +
                 std::to_string( propagationDependentVariables ) +

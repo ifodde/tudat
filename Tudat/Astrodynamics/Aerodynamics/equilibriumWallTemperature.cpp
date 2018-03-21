@@ -8,6 +8,7 @@
  *    http://tudat.tudelft.nl/LICENSE.
  */
 
+#include <stdlib.h>
 #include "Tudat/Astrodynamics/Aerodynamics/equilibriumWallTemperature.h"
 #include "Tudat/Mathematics/RootFinders/rootFinder.h"
 #include "Tudat/Mathematics/RootFinders/terminationConditions.h"
@@ -59,7 +60,10 @@ double computeEquilibiumWallTemperature( const boost::function< double( const do
         }
         catch ( std::runtime_error )
         {
-            throw std::runtime_error( "Error, could not find equilibrium wall temperature" );
+            std::cout<<"Wall estimate not founds, using 1000K"<<std::endl;
+            //throw std::runtime_error( "Error, could not find equilibrium wall temperature" );
+            wallTemperature = 1000;
+            return wallTemperature;
         }
 
     }
