@@ -89,7 +89,8 @@ public:
                       aerodynamicAngleCalculator =
             boost::shared_ptr< reference_frames::AerodynamicAngleCalculator >( ),
                       const boost::function< double( const std::string& )> controlSurfaceDeflectionFunction =
-            boost::function< double( const std::string& )>( ));
+            boost::function< double( const std::string& )>( ),
+                     std::string centralBodyName = "Earth");
 
     //! Function to update all flight conditions.
     /*!
@@ -278,49 +279,99 @@ public:
 
     double getTauberRadHeatFlux( )
     {
-        std::vector<double> velocityFunction(37);
-        std::vector<double> heatingFunction(37);
-        velocityFunction[0]  = 6000;   heatingFunction[0]  = 0.2;
-        velocityFunction[1]  = 6150;   heatingFunction[1]  = 1.0;
-        velocityFunction[2]  = 6300;   heatingFunction[2]  = 1.95;
-        velocityFunction[3]  = 6500;   heatingFunction[3]  = 3.42;
-        velocityFunction[4]  = 6700;   heatingFunction[4]  = 5.1;
-        velocityFunction[5]  = 6900;   heatingFunction[5]  = 7.1;
-        velocityFunction[6]  = 7000;   heatingFunction[6]  = 8.1;
-        velocityFunction[7]  = 7200;   heatingFunction[7]  = 10.2;
-        velocityFunction[8]  = 7400;   heatingFunction[8]  = 12.5;
-        velocityFunction[9]  = 7600;   heatingFunction[9]  = 14.8;
-        velocityFunction[10] = 7800;   heatingFunction[10] = 17.1;
-        velocityFunction[11] = 8000;   heatingFunction[11] = 19.2;
-        velocityFunction[12] = 8200;   heatingFunction[12] = 21.4;
-        velocityFunction[13] = 8400;   heatingFunction[13] = 24.1;
-        velocityFunction[14] = 8600;   heatingFunction[14] = 26.0;
-        velocityFunction[15] = 8800;   heatingFunction[15] = 28.9;
-        velocityFunction[16] = 9000;   heatingFunction[16] = 32.8;
-        velocityFunction[17] = 9200; 	heatingFunction[17] = 35.138107;
-        velocityFunction[18] = 9400; 	heatingFunction[18] = 38.156042;
-        velocityFunction[19] = 9600; 	heatingFunction[19] = 41.269273;
-        velocityFunction[20] = 9800; 	heatingFunction[20] = 44.477800;
-        velocityFunction[21] = 10000; 	heatingFunction[21] = 47.781623;
-        velocityFunction[22] = 10200; 	heatingFunction[22] = 51.180743;
-        velocityFunction[23] = 10400; 	heatingFunction[23] = 54.675159;
-        velocityFunction[24] = 10600; 	heatingFunction[24] = 58.264871;
-        velocityFunction[25] = 10800; 	heatingFunction[25] = 61.949880;
-        velocityFunction[26] = 11000; 	heatingFunction[26] = 65.730185;
-        velocityFunction[27] = 11200; 	heatingFunction[27] = 69.605786;
-        velocityFunction[28] = 11400; 	heatingFunction[28] = 73.576683;
-        velocityFunction[29] = 11600; 	heatingFunction[29] = 77.642877;
-        velocityFunction[30] = 11800; 	heatingFunction[30] = 81.804367;
-        velocityFunction[31] = 12000; 	heatingFunction[31] = 86.061153;
-        velocityFunction[32] = 12200; 	heatingFunction[32] = 90.413235;
-        velocityFunction[33] = 12400; 	heatingFunction[33] = 94.860614;
-        velocityFunction[34] = 12600; 	heatingFunction[34] = 99.403289;
-        velocityFunction[35] = 12800; 	heatingFunction[35] = 104.041260;
-        velocityFunction[36] = 13000; 	heatingFunction[36] = 108.774528;
+        double radiativeConstant_a ;
+        double radiativeConstant_b ;
+        double radiativeConstant_C ;
 
         std::map< double, double > heatingMap;
-        std::transform( velocityFunction.begin(), velocityFunction.end(), heatingFunction.begin(),
-               std::inserter(heatingMap, heatingMap.end() ), std::make_pair<double const&,double const&> );
+
+        if (centralBodyName_ == "Mars" )
+        {
+            std::vector<double> velocityFunction(37);
+            std::vector<double> heatingFunction(37);
+            velocityFunction[0]  = 6000;   heatingFunction[0]  = 0.2;
+            velocityFunction[1]  = 6150;   heatingFunction[1]  = 1.0;
+            velocityFunction[2]  = 6300;   heatingFunction[2]  = 1.95;
+            velocityFunction[3]  = 6500;   heatingFunction[3]  = 3.42;
+            velocityFunction[4]  = 6700;   heatingFunction[4]  = 5.1;
+            velocityFunction[5]  = 6900;   heatingFunction[5]  = 7.1;
+            velocityFunction[6]  = 7000;   heatingFunction[6]  = 8.1;
+            velocityFunction[7]  = 7200;   heatingFunction[7]  = 10.2;
+            velocityFunction[8]  = 7400;   heatingFunction[8]  = 12.5;
+            velocityFunction[9]  = 7600;   heatingFunction[9]  = 14.8;
+            velocityFunction[10] = 7800;   heatingFunction[10] = 17.1;
+            velocityFunction[11] = 8000;   heatingFunction[11] = 19.2;
+            velocityFunction[12] = 8200;   heatingFunction[12] = 21.4;
+            velocityFunction[13] = 8400;   heatingFunction[13] = 24.1;
+            velocityFunction[14] = 8600;   heatingFunction[14] = 26.0;
+            velocityFunction[15] = 8800;   heatingFunction[15] = 28.9;
+            velocityFunction[16] = 9000;   heatingFunction[16] = 32.8;
+            velocityFunction[17] = 9200; 	heatingFunction[17] = 35.138107;
+            velocityFunction[18] = 9400; 	heatingFunction[18] = 38.156042;
+            velocityFunction[19] = 9600; 	heatingFunction[19] = 41.269273;
+            velocityFunction[20] = 9800; 	heatingFunction[20] = 44.477800;
+            velocityFunction[21] = 10000; 	heatingFunction[21] = 47.781623;
+            velocityFunction[22] = 10200; 	heatingFunction[22] = 51.180743;
+            velocityFunction[23] = 10400; 	heatingFunction[23] = 54.675159;
+            velocityFunction[24] = 10600; 	heatingFunction[24] = 58.264871;
+            velocityFunction[25] = 10800; 	heatingFunction[25] = 61.949880;
+            velocityFunction[26] = 11000; 	heatingFunction[26] = 65.730185;
+            velocityFunction[27] = 11200; 	heatingFunction[27] = 69.605786;
+            velocityFunction[28] = 11400; 	heatingFunction[28] = 73.576683;
+            velocityFunction[29] = 11600; 	heatingFunction[29] = 77.642877;
+            velocityFunction[30] = 11800; 	heatingFunction[30] = 81.804367;
+            velocityFunction[31] = 12000; 	heatingFunction[31] = 86.061153;
+            velocityFunction[32] = 12200; 	heatingFunction[32] = 90.413235;
+            velocityFunction[33] = 12400; 	heatingFunction[33] = 94.860614;
+            velocityFunction[34] = 12600; 	heatingFunction[34] = 99.403289;
+            velocityFunction[35] = 12800; 	heatingFunction[35] = 104.041260;
+            velocityFunction[36] = 13000; 	heatingFunction[36] = 108.774528;
+
+            std::transform( velocityFunction.begin(), velocityFunction.end(), heatingFunction.begin(),
+                   std::inserter(heatingMap, heatingMap.end() ), std::make_pair<double const&,double const&> );
+
+            radiativeConstant_a = 0.526;
+            radiativeConstant_b = 1.19;
+            radiativeConstant_C = 2.35e8;
+        }
+        else if(centralBodyName_ == "Earth")
+        {
+            std::vector<double> velocityFunction(19);
+            std::vector<double> heatingFunction(19);
+            velocityFunction[0]  = 9000;    heatingFunction[0]  = 1.5;
+            velocityFunction[1]  = 9250;    heatingFunction[1]  = 4.3;
+            velocityFunction[2]  = 9500;    heatingFunction[2]  = 9.7;
+            velocityFunction[3]  = 9750;    heatingFunction[3]  = 19.5;
+            velocityFunction[4]  = 10000;   heatingFunction[4]  = 35;
+            velocityFunction[5]  = 10250;   heatingFunction[5]  = 55;
+            velocityFunction[6]  = 10500;   heatingFunction[6]  = 81;
+            velocityFunction[7]  = 10750;   heatingFunction[7]  = 115;
+            velocityFunction[8]  = 11000;   heatingFunction[8]  = 151;
+            velocityFunction[9]  = 11500;   heatingFunction[9]  = 238;
+            velocityFunction[10] = 12000;   heatingFunction[10] = 359;
+            velocityFunction[11] = 12500;   heatingFunction[11] = 495;
+            velocityFunction[12] = 13000;   heatingFunction[12] = 660;
+            velocityFunction[13] = 13500;   heatingFunction[13] = 850;
+            velocityFunction[14] = 14000;   heatingFunction[14] = 1065;
+            velocityFunction[15] = 14500;   heatingFunction[15] = 1313;
+            velocityFunction[16] = 15000;   heatingFunction[16] = 1550;
+            velocityFunction[17] = 15500;   heatingFunction[17] = 1780;
+            velocityFunction[18] = 16000;   heatingFunction[18] = 2040;
+
+            std::transform( velocityFunction.begin(), velocityFunction.end(), heatingFunction.begin(),
+                   std::inserter(heatingMap, heatingMap.end() ), std::make_pair<double const&,double const&> );
+
+            radiativeConstant_a = 0.6;
+            radiativeConstant_b = 1.22;
+            radiativeConstant_C = 4.736e8;
+        }
+        else
+        {
+            throw std::runtime_error(
+                        "Error when making radiative heating, body " + centralBodyName_ +
+                        " has no velocity table." );
+        }
+
 
         boost::shared_ptr< interpolators::InterpolatorSettings > interpolatorSettings =
             boost::make_shared< interpolators::InterpolatorSettings >( interpolators::cubic_spline_interpolator );
@@ -329,10 +380,6 @@ public:
                 interpolators::createOneDimensionalInterpolator(
                     heatingMap, interpolatorSettings );
 
-        double radiativeConstant_a = 0.526;
-        double radiativeConstant_b = 1.19;
-        double radiativeConstant_C = 2.35e8;
-
         double airspeed = getCurrentAirspeed();
         double density = getCurrentDensity();
         double noseRadius = vehicleSystem_->getNoseRadius();
@@ -340,7 +387,11 @@ public:
         double radiativeHeatFlux = radiativeConstant_C * std::pow(noseRadius,radiativeConstant_a) *
                                 std::pow(density,radiativeConstant_b) * interpolator->interpolate(airspeed);
 
-        return radiativeHeatFlux;
+        if ( (centralBodyName_ == "Earth" && (airspeed < 9000 || airspeed > 16000)) ||  (centralBodyName_ == "Mars" && (airspeed < 6000 || airspeed > 13000)) ){
+            return 0.0;
+        } else {
+            return radiativeHeatFlux;
+        }
 
     }
 
@@ -670,6 +721,7 @@ private:
     std::map< std::string, std::vector< double > > controlSurfaceAerodynamicCoefficientIndependentVariables_;
 
     boost::shared_ptr< system_models::VehicleSystems > vehicleSystem_;
+    std::string centralBodyName_;
 };
 
 } // namespace aerodynamics
