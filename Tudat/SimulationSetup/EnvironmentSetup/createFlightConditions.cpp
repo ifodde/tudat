@@ -126,7 +126,7 @@ boost::shared_ptr< aerodynamics::FlightConditions > createFlightConditions(
             boost::make_shared< aerodynamics::FlightConditions >(
                 centralBody->getAtmosphereModel( ), centralBody->getShapeModel( ),
                 bodyWithFlightConditions->getAerodynamicCoefficientInterface( ), bodyWithFlightConditions->getVehicleSystems( ),
-                aerodynamicAngleCalculator, controlSurfaceDeflectionFunction );
+                aerodynamicAngleCalculator, controlSurfaceDeflectionFunction,nameOfBodyExertingAcceleration );
 
     return flightConditions;
 

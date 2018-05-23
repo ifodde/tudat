@@ -378,6 +378,8 @@ public:
         propagationTerminationReason_( propagationTerminationReason ),
         terminationOnExactCondition_( terminationOnExactCondition ){ }
 
+    virtual ~PropagationTerminationDetails(){ }
+
     //! Function to retrieve reason for termination
     /*!
      * Function to retrieve reason for termination
