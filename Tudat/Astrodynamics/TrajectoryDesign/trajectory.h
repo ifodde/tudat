@@ -70,7 +70,7 @@ namespace spaceTrajectories
 
 // Enumeration containing the different leg types that can be part of the trajectory.
 enum legTypes{ mga_Departure = 1, mga_Swingby, mga1DsmPosition_Departure, mga1DsmPosition_Swingby,
-               mga1DsmVelocity_Departure, mga1DsmVelocity_Swingby, capture };
+               mga1DsmVelocity_Departure, mga1DsmVelocity_Swingby, capture, aga_Swingby };
 
 //! Base class for computation of trajectories
 /*!
@@ -101,10 +101,14 @@ public:
                 const double centralBodyGravitationalParameter,
                 const Eigen::VectorXd& minimumPericenterRadiiVector,
                 const Eigen::VectorXd& semiMajorAxesVector,
-                const Eigen::VectorXd& eccentricityVector )
+                const Eigen::VectorXd& eccentricityVector,
+                const std::vector< std::string > bodyNameVector)
     {
         // Set the number of legs.
         numberOfLegs_ = numberOfLegs;
+
+        // Set the body names.
+        bodyNameVector_ = bodyNameVector;
 
         // Set the leg type vector, the planet vector and the gravitational parameter vector.
         legTypeVector_ = legTypeVector;
@@ -335,6 +339,12 @@ private:
      * Extracts the ephemeris data and stores it into the associated position and velocity vectors.
      */
     void extractEphemeris( );
+
+    //! List of bodies used in trajectory.
+    /*!
+     * A list of bodies used for swingby's, only used in the AGA.
+     */
+    std::vector< std::string > bodyNameVector_;
 };
 } // namespace spaceTrajectories
 } // namespace tudat

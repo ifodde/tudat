@@ -44,49 +44,6 @@ void TabulatedAtmosphere::initialize( const std::string& atmosphereTableFile )
     temperatureData_.resize( containerOfAtmosphereTableFileData.rows( ) );
     specificHeatRatioData_.resize( containerOfAtmosphereTableFileData.rows( ) );
 
-    int densityIndex = 0;
-    int pressureIndex = 0;
-    int temperatureIndex = 0;
-    int specificHeatRatioIndex = 0;
-    int gasConstantIndex = 0;
-    containsSpecificHeatRatio_ = false;
-    containsGasConstant_ = false;
-
-    for( unsigned int i = 0; i < dependentVariables_.size( ); i++ )
-    {
-        switch( dependentVariables_[ i ] )
-        {
-        case density_dependent_atmosphere:
-            densityIndex = i + 1;
-            break;
-        case pressure_dependent_atmosphere:
-            pressureIndex = i + 1;
-            break;
-        case temperature_dependent_atmosphere:
-            temperatureIndex = i + 1;
-            break;
-        case specific_heat_ratio_dependent_atmosphere:
-            containsSpecificHeatRatio_ = true;
-            specificHeatRatioIndex = i + 1;
-            break;
-        case gas_constant_dependent_atmosphere:
-            containsGasConstant_ = true;
-            gasConstantIndex = i + 1;
-            break;
-        default:
-            std::string errorMessage = "Error, dependent variable " +
-                    std::to_string( dependentVariables_[i] ) +
-                    " not found in tabulated atmosphere";
-            throw std::runtime_error( errorMessage );
-        }
-    }
-
-    if( densityIndex == 0 || pressureIndex == 0 || temperatureIndex == 0 )
-    {
-        throw std::runtime_error(
-                    "Error, tabulated atmosphere must be initialized with at least temperature, pressure and density" );
-    }
-
     // Loop through all the strings stored in the container and store the data
     // in the right Eigen::VectorXd.
     for ( int i = 0; i < containerOfAtmosphereTableFileData.rows( ); i++  )
@@ -97,7 +54,6 @@ void TabulatedAtmosphere::initialize( const std::string& atmosphereTableFile )
         temperatureData_[ i ] = containerOfAtmosphereTableFileData( i, 3 );
         specificHeatRatioData_[ i ] = containerOfAtmosphereTableFileData( i, 4 );
     }
-
 
     using namespace interpolators;
 

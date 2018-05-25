@@ -12,6 +12,7 @@
 set(MISSIONSEGMENTS_SOURCES
   "${SRCROOT}${MISSIONSEGMENTSDIR}/escapeAndCapture.cpp"
   "${SRCROOT}${MISSIONSEGMENTSDIR}/gravityAssist.cpp"
+  "${SRCROOT}${MISSIONSEGMENTSDIR}/aeroGravityAssist.cpp"
   "${SRCROOT}${MISSIONSEGMENTSDIR}/improvedInversePolynomialWall.cpp"
   "${SRCROOT}${MISSIONSEGMENTSDIR}/lambertTargeterIzzo.cpp"
   "${SRCROOT}${MISSIONSEGMENTSDIR}/lambertTargeterGooding.cpp"
@@ -25,6 +26,7 @@ set(MISSIONSEGMENTS_SOURCES
 set(MISSIONSEGMENTS_HEADERS 
   "${SRCROOT}${MISSIONSEGMENTSDIR}/escapeAndCapture.h"
   "${SRCROOT}${MISSIONSEGMENTSDIR}/gravityAssist.h"
+  "${SRCROOT}${MISSIONSEGMENTSDIR}/aeroGravityAssist.h"
   "${SRCROOT}${MISSIONSEGMENTSDIR}/improvedInversePolynomialWall.h"
   "${SRCROOT}${MISSIONSEGMENTSDIR}/lambertTargeter.h"
   "${SRCROOT}${MISSIONSEGMENTSDIR}/lambertTargeterIzzo.h"
@@ -47,6 +49,10 @@ target_link_libraries(test_EscapeAndCapture tudat_mission_segments tudat_gravita
 add_executable(test_GravityAssist "${SRCROOT}${MISSIONSEGMENTSDIR}/UnitTests/unitTestGravityAssist.cpp")
 setup_custom_test_program(test_GravityAssist "${SRCROOT}${MISSIONSEGMENTSDIR}")
 target_link_libraries(test_GravityAssist tudat_gravitation tudat_mission_segments tudat_basic_astrodynamics tudat_basic_mathematics tudat_root_finders tudat_input_output ${Boost_LIBRARIES})
+
+add_executable(test_AeroGravityAssist "${SRCROOT}${MISSIONSEGMENTSDIR}/UnitTests/unitTestAeroGravityAssist.cpp")
+setup_custom_test_program(test_AeroGravityAssist "${SRCROOT}${MISSIONSEGMENTSDIR}")
+target_link_libraries(test_AeroGravityAssist tudat_gravitation tudat_mission_segments tudat_basic_astrodynamics tudat_basic_mathematics tudat_root_finders tudat_input_output ${Boost_LIBRARIES})
 
 add_executable(test_LambertTargeterIzzo "${SRCROOT}${MISSIONSEGMENTSDIR}/UnitTests/unitTestLambertTargeterIzzo.cpp")
 setup_custom_test_program(test_LambertTargeterIzzo "${SRCROOT}${MISSIONSEGMENTSDIR}")

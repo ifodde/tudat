@@ -45,6 +45,7 @@
 #include "departureLegMga1DsmVelocity.h"
 #include "planetTrajectory.h"
 #include "swingbyLegMga.h"
+#include "swingbyLegAga.h"
 #include "swingbyLegMga1DsmPosition.h"
 #include "swingbyLegMga1DsmVelocity.h"
 #include "trajectory.h"
@@ -378,7 +379,23 @@ void Trajectory::prepareLegs( )
                 missionLeg = swingbyLegMga;
                 break;
             }
+            case aga_Swingby:
+            {
+                // Initialize leg with the corresponding variables/pointers.
+                boost::shared_ptr< SwingbyLegAga > swingbyLegAga =
+                        boost::make_shared< SwingbyLegAga >(
+                           planetPositionVector_[ counter ],
+                           planetPositionVector_[ counter + 1],
+                           trajectoryVariableVector_[ counter + 1 ],
+                           planetVelocityVector_[ counter ],
+                           centralBodyGravitationalParameter_,
+                           gravitationalParameterVector_[ counter ],
+                           spacecraftVelocityPtrVector_[ counter - 1],
+                           bodyNameVector_[ counter ] );
 
+                missionLeg = swingbyLegAga;
+                break;
+            }
             case mga1DsmPosition_Departure:
             {
                 // Initialize leg with the corresponding variables/pointers.

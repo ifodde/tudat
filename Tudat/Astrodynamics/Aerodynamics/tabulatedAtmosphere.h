@@ -47,19 +47,6 @@ class TabulatedAtmosphere : public StandardAtmosphere
 {
 public:
 
-    /*!
-     * Enum of all the possible dependent variables that can be used in the tabulated atmosphere
-     * file.
-     */
-    enum AtmosphereDependentVariables
-    {
-        density_dependent_atmosphere = 0,
-        pressure_dependent_atmosphere = 1,
-        temperature_dependent_atmosphere = 2,
-        specific_heat_ratio_dependent_atmosphere = 3,
-        gas_constant_dependent_atmosphere = 4
-    };
-
     //! Default constructor.
     /*!
      *  Default constructor.
@@ -95,21 +82,7 @@ public:
      * Returns the specific gas constant of the air in J/(kg K), its value is assumed constant.
      * \return specificGasConstant Specific gas constant in exponential atmosphere.
      */
-    double getSpecificGasConstant(const double altitude, const double longitude = 0.0,
-                                  const double latitude = 0.0, const double time = 0.0  )
-    {
-        TUDAT_UNUSED_PARAMETER( longitude );
-        TUDAT_UNUSED_PARAMETER( latitude );
-        TUDAT_UNUSED_PARAMETER( time );
-        if( containsSpecificHeatRatio_ )
-        {
-            return cubicSplineInterpolationForGasConstant_->interpolate( altitude );
-        }
-        else
-        {
-            return specificGasConstant_;
-        }
-    }
+    double getSpecificGasConstant( ) { return specificGasConstant_; }
 
     //! Get ratio of specific heats.
     /*!
@@ -331,18 +304,6 @@ private:
      */
     std::vector< double > temperatureData_;
 
-    //! Vector containing the specific heat ratio data as a function of the altitude.
-    /*!
-     *  Vector containing the specific heat ratio data as a function of the altitude.
-     */
-    std::vector< double > specificHeatRatioData_;
-
-    //! Vector containing the gas constant data as a function of the altitude.
-    /*!
-     *  Vector containing the gas constant data as a function of the altitude.
-     */
-    std::vector< double > gasConstantData_;
-
     //! Cubic spline interpolation for density.
     /*!
      *  Cubic spline interpolation for density.
@@ -370,18 +331,11 @@ private:
      */
     double specificGasConstant_;
 
-    //! Ratio of specific heats of the atmosphrer at constant pressure and constant volume.
     /*!
      *  Ratio of specific heats of the atmosphrer at constant pressure and constant volume.
      *  This value is set to a constant, implying constant atmospheric composition.
      */
     double ratioOfSpecificHeats_;
-
-    //! Bool that determines if the ratio of specific heats is contained in the given atmosphere file.
-    bool containsSpecificHeatRatio_;
-
-     //!  Bool that determines if the specific gas constant is contained in the given atmosphere file.
-    bool containsGasConstant_;
 };
 
 //! Typedef for shared-pointer to TabulatedAtmosphere object.

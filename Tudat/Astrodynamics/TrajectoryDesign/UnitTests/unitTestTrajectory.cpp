@@ -89,6 +89,13 @@ BOOST_AUTO_TEST_CASE( testMGATrajectory )
     legTypeVector[2] = mga_Swingby; legTypeVector[3] = mga_Swingby; legTypeVector[4] = mga_Swingby;
     legTypeVector[5] = capture;
 
+    // Specify the bodies.
+    std::vector< std::string > bodyNamesVector;
+    bodyNamesVector.resize( numberOfLegs );
+    bodyNamesVector[0] = "Earth"; bodyNamesVector[1] = "Venus";
+    bodyNamesVector[2] = "Venus"; bodyNamesVector[3] = "Earth"; bodyNamesVector[4] = "Jupiter";
+    bodyNamesVector[5] = "Saturn";
+
     // Create the ephemeris vector.
     std::vector< ephemerides::EphemerisPointer >
             ephemerisVector( numberOfLegs );
@@ -125,7 +132,7 @@ BOOST_AUTO_TEST_CASE( testMGATrajectory )
     // Create the trajectory problem.
     Trajectory Cassini1 ( numberOfLegs, legTypeVector, ephemerisVector,
                           gravitationalParameterVector, variableVector, sunGravitationalParameter,
-                          minimumPericenterRadii, semiMajorAxes, eccentricities );
+                          minimumPericenterRadii, semiMajorAxes, eccentricities, bodyNamesVector );
 
     // Start the deltaV vector.
     double resultingDeltaV;
@@ -156,6 +163,14 @@ BOOST_AUTO_TEST_CASE( testMGA1DSMVFTrajectory1 )
     legTypeVector[0] = mga1DsmVelocity_Departure; legTypeVector[1] = mga1DsmVelocity_Swingby;
     legTypeVector[2] = mga1DsmVelocity_Swingby; legTypeVector[3] = mga1DsmVelocity_Swingby;
     legTypeVector[4] = capture;
+
+    // Specify the bodies.
+    std::vector< std::string > bodyNamesVector;
+    bodyNamesVector.resize( numberOfLegs );
+    bodyNamesVector[0] = "Earth"; bodyNamesVector[1] = "Earth";
+    bodyNamesVector[2] = "Venus"; bodyNamesVector[3] = "Venus";
+    bodyNamesVector[4] = "Mercury";
+
 
     // Create the ephemeris vector.
     std::vector< ephemerides::EphemerisPointer >
@@ -205,7 +220,7 @@ BOOST_AUTO_TEST_CASE( testMGA1DSMVFTrajectory1 )
     // Create the trajectory problem.
     Trajectory Messenger ( numberOfLegs, legTypeVector, ephemerisVector,
                            gravitationalParameterVector, variableVector, sunGravitationalParameter,
-                           minimumPericenterRadii, semiMajorAxes, eccentricities );
+                           minimumPericenterRadii, semiMajorAxes, eccentricities, bodyNamesVector );
 
     // Start the deltaV vector.
     double resultingDeltaV;
@@ -235,6 +250,14 @@ BOOST_AUTO_TEST_CASE( testMGA1DSMVFTrajectory2 )
     legTypeVector[0] = mga1DsmVelocity_Departure; legTypeVector[1] = mga1DsmVelocity_Swingby;
     legTypeVector[2] = mga1DsmVelocity_Swingby; legTypeVector[3] = mga1DsmVelocity_Swingby;
     legTypeVector[4] = mga1DsmVelocity_Swingby; legTypeVector[5] = capture;
+
+    // Specify the bodies.
+    std::vector< std::string > bodyNamesVector;
+    bodyNamesVector.resize( numberOfLegs );
+    bodyNamesVector[0] = "Earth"; bodyNamesVector[1] = "Venus";
+    bodyNamesVector[2] = "Venus"; bodyNamesVector[3] = "Earth"; bodyNamesVector[4] = "Jupiter";
+    bodyNamesVector[5] = "Saturn";
+
 
     // Create the ephemeris vector.
     std::vector< ephemerides::EphemerisPointer >
@@ -287,7 +310,7 @@ BOOST_AUTO_TEST_CASE( testMGA1DSMVFTrajectory2 )
     // Create the trajectory problem.
     Trajectory Cassini2 ( numberOfLegs, legTypeVector, ephemerisVector,
                           gravitationalParameterVector, variableVector, sunGravitationalParameter,
-                          minimumPericenterRadii, semiMajorAxes, eccentricities );
+                          minimumPericenterRadii, semiMajorAxes, eccentricities, bodyNamesVector );
 
     // Start the deltaV vector.
     double resultingDeltaV;
@@ -317,6 +340,14 @@ BOOST_AUTO_TEST_CASE( testUpdateMGATrajectory )
     legTypeVector[0] = mga_Departure; legTypeVector[1] = mga_Swingby;
     legTypeVector[2] = mga_Swingby; legTypeVector[3] = mga_Swingby; legTypeVector[4] = mga_Swingby;
     legTypeVector[5] = capture;
+
+    // Specify the bodies.
+    std::vector< std::string > bodyNamesVector;
+    bodyNamesVector.resize( numberOfLegs );
+    bodyNamesVector[0] = "Earth"; bodyNamesVector[1] = "Venus";
+    bodyNamesVector[2] = "Venus"; bodyNamesVector[3] = "Earth"; bodyNamesVector[4] = "Jupiter";
+    bodyNamesVector[5] = "Saturn";
+
 
     // Create the ephemeris vector.
     std::vector< ephemerides::EphemerisPointer >
@@ -360,7 +391,7 @@ BOOST_AUTO_TEST_CASE( testUpdateMGATrajectory )
     Trajectory cassini1 ( numberOfLegs, legTypeVector, ephemerisVector,
                           gravitationalParameterVector, dummyVariableVector,
                           sunGravitationalParameter, minimumPericenterRadii, semiMajorAxes,
-                          eccentricities );
+                          eccentricities, bodyNamesVector );
 
     // Start the deltaV vector.
     double resultingDeltaV;
@@ -403,6 +434,13 @@ BOOST_AUTO_TEST_CASE( testUpdateMGA1DSMVFTrajectory )
     legTypeVector[0] = mga1DsmVelocity_Departure; legTypeVector[1] = mga1DsmVelocity_Swingby;
     legTypeVector[2] = mga1DsmVelocity_Swingby; legTypeVector[3] = mga1DsmVelocity_Swingby;
     legTypeVector[4] = capture;
+
+    // Specify the bodies.
+    std::vector< std::string > bodyNamesVector;
+    bodyNamesVector.resize( numberOfLegs );
+    bodyNamesVector[0] = "Earth"; bodyNamesVector[1] = "Earth";
+    bodyNamesVector[2] = "Venus"; bodyNamesVector[3] = "Venus";
+    bodyNamesVector[4] = "Mercury";
 
     // Create the ephemeris vector.
     std::vector< ephemerides::EphemerisPointer >
@@ -457,7 +495,7 @@ BOOST_AUTO_TEST_CASE( testUpdateMGA1DSMVFTrajectory )
     Trajectory messenger ( numberOfLegs, legTypeVector, ephemerisVector,
                            gravitationalParameterVector, dummyVariableVector,
                            sunGravitationalParameter, minimumPericenterRadii, semiMajorAxes,
-                           eccentricities );
+                           eccentricities, bodyNamesVector );
 
     // Start the deltaV vector.
     double resultingDeltaV;
