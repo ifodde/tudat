@@ -230,7 +230,7 @@ void Trajectory::updateVariableVector( const Eigen::VectorXd& trajectoryVariable
     {
         switch ( legTypeVector_[ counter ] )
         {
-            case mga_Departure: case mga_Swingby: case capture:
+            case mga_Departure: case mga_Swingby: case aga_Swingby: case capture:
                 tempVector.resize( 1 );
                 tempVector << trajectoryVariableVector_[ 1 /*jump over t_0*/ + counter ];
                 break;
@@ -306,7 +306,7 @@ int Trajectory::checkTrajectoryVariableVectorSize( )
     {
         switch ( legTypeVector_[ counter ] )
         {
-            case mga_Departure: case mga_Swingby: case capture:
+            case mga_Departure: case mga_Swingby: case aga_Swingby: case capture:
                 size += 1;
                 break;
             case mga1DsmPosition_Departure: case mga1DsmPosition_Swingby:

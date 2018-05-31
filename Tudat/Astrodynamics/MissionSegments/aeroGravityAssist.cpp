@@ -67,7 +67,13 @@ double MarsAtmosphericTrajectoryFunction( const double incomingHyperbolicVelocit
     double x = incomingHyperbolicVelocity;
     double y = velocityBendingAngle;
 
-    return p00 + p10*x + p01*y + p11*x*y + p02*std::pow(y,2) + p12*x*std::pow(y,2) + p03*pow(y,3);
+    if (p00 + p10*x + p01*y + p11*x*y + p02*std::pow(y,2) + p12*x*std::pow(y,2) + p03*pow(y,3) >= 0){
+        return p00 + p10*x + p01*y + p11*x*y + p02*std::pow(y,2) + p12*x*std::pow(y,2) + p03*pow(y,3);
+    } else {
+        return 0.0;
+    }
+
+
 }
 
 //! Calculate deltaV of an aero gravity assist.
