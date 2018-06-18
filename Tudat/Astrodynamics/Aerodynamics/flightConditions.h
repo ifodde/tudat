@@ -365,6 +365,25 @@ public:
             radiativeConstant_b = 1.22;
             radiativeConstant_C = 4.736e8;
         }
+        else if (centralBodyName_ == "Venus"){
+            radiativeConstant_a = 0.0;
+            radiativeConstant_b = 0.0;
+            radiativeConstant_C = 0.0;
+            double airspeed = getCurrentAirspeed();
+            double density = getCurrentDensity();
+            double noseRadius = vehicleSystem_->getNoseRadius();
+            double radiativeHeatFlux;
+            if (centralBodyName_ == "Venus" && airspeed >= 10028 && airspeed <= 12000){
+                radiativeHeatFlux = 9.497E-63 * std::pow(noseRadius,0.49) *
+                                        std::pow(density,1.2) * std::pow(airspeed,18);
+            } else if (centralBodyName_ == "Venus" && airspeed < 10028 ){
+                radiativeHeatFlux = 2.195E-22 * std::pow(noseRadius,0.49) *
+                                        std::pow(density,1.2) * std::pow(airspeed,7.9);
+            } else if (centralBodyName_ == "Venus" && airspeed > 12000 ){
+                radiativeHeatFlux = 0.0;
+            }
+            return radiativeHeatFlux;
+        }
         else
         {
             throw std::runtime_error(
@@ -383,8 +402,8 @@ public:
         double airspeed = getCurrentAirspeed();
         double density = getCurrentDensity();
         double noseRadius = vehicleSystem_->getNoseRadius();
-
-        double radiativeHeatFlux = radiativeConstant_C * std::pow(noseRadius,radiativeConstant_a) *
+        double radiativeHeatFlux;
+        radiativeHeatFlux = radiativeConstant_C * std::pow(noseRadius,radiativeConstant_a) *
                                 std::pow(density,radiativeConstant_b) * interpolator->interpolate(airspeed);
 
         if ( (centralBodyName_ == "Earth" && (airspeed < 9000 || airspeed > 16000)) ||  (centralBodyName_ == "Mars" && (airspeed < 6000 || airspeed > 13000)) ){

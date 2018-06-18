@@ -56,6 +56,10 @@ namespace mission_segments
 double MarsAtmosphericTrajectoryFunction( const double incomingHyperbolicVelocity,
                                           const double velocityBendingAngle )
 {
+    if (incomingHyperbolicVelocity > 9000 || incomingHyperbolicVelocity < 3000)
+    {
+        return 0;
+    }
     double p00 = 1022.0;//  (524.1, 1520)
     double p10 = 1.008;//  (0.9565, 1.059)
     double p01 = 913.9;//  (324.6, 1503)
