@@ -49,6 +49,28 @@ namespace mission_segments
 double MarsAtmosphericTrajectoryFunction( const double incomingHyperbolicVelocity,
                                           const double velocityBendingAngle );
 
+//! Calculate limiting surface of an aero gravity assist at Earth.
+/*!
+ * Calculates if the input values are feasible for an aerogravity assist, and if not, calculates the
+ * extra Delta V needed to correct for it.
+ * \param incomingHyperbolicVelocity Hyperbolic excess velocity of the spacecraft before the swing-by.     [m s^-1]
+ * \param velocityBendingAngle Angle between the incoming and outgoing hyperbolic excess velocity vectors.    [rad]
+ * \return outgoingHyperbolicVelocity the maximum outgoing hyperbolic velocity possible.                   [m s^-1]
+ */
+double EarthAtmosphericTrajectoryFunction( const double incomingHyperbolicVelocity,
+                                          const double velocityBendingAngle );
+
+//! Calculate limiting surface of an aero gravity assist at Venus.
+/*!
+ * Calculates if the input values are feasible for an aerogravity assist, and if not, calculates the
+ * extra Delta V needed to correct for it.
+ * \param incomingHyperbolicVelocity Hyperbolic excess velocity of the spacecraft before the swing-by.     [m s^-1]
+ * \param velocityBendingAngle Angle between the incoming and outgoing hyperbolic excess velocity vectors.    [rad]
+ * \return outgoingHyperbolicVelocity the maximum outgoing hyperbolic velocity possible.                   [m s^-1]
+ */
+double VenusAtmosphericTrajectoryFunction( const double incomingHyperbolicVelocity,
+                                          const double velocityBendingAngle );
+
 //! Calculate deltaV of an aero gravity assist.
 /*!
  * Calculates if the input values are feasible for an aerogravity assist, and if not, calculates the

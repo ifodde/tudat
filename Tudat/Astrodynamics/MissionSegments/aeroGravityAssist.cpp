@@ -56,25 +56,86 @@ namespace mission_segments
 double MarsAtmosphericTrajectoryFunction( const double incomingHyperbolicVelocity,
                                           const double velocityBendingAngle )
 {
-    if (incomingHyperbolicVelocity > 9000 || incomingHyperbolicVelocity < 3000)
+    if (incomingHyperbolicVelocity > 7000 || incomingHyperbolicVelocity < 2000)
     {
-        return 0;
+        return -10000.0;
     }
-    double p00 = 1022.0;//  (524.1, 1520)
-    double p10 = 1.008;//  (0.9565, 1.059)
-    double p01 = 913.9;//  (324.6, 1503)
-    double p11 = -0.5519;//  (-0.597, -0.5068)
-    double p02 = -7.108;//  (-234.6, 220.4)
-    double p12 = 0.07504;//  (0.06548, 0.0846)
-    double p03 = -92.47;//  (-123.6, -61.38)
+    double p00 = 2380.0;
+    double p10 = 0.85;
+    double p01 = -1048;
+    double p11 = -0.3385;
+    double p02 = 641.6;
+    double p12 = 0.03174;
+    double p03 = -160.4;
 
     double x = incomingHyperbolicVelocity;
     double y = velocityBendingAngle;
 
-    if (p00 + p10*x + p01*y + p11*x*y + p02*std::pow(y,2) + p12*x*std::pow(y,2) + p03*pow(y,3) >= 0){
-        return p00 + p10*x + p01*y + p11*x*y + p02*std::pow(y,2) + p12*x*std::pow(y,2) + p03*pow(y,3);
+    double outgoingHyperbolicVelocity = p00 + p10*x + p01*y + p11*x*y + p02*std::pow(y,2) + p12*x*std::pow(y,2) + p03*pow(y,3);
+
+    if (outgoingHyperbolicVelocity >= 0 && outgoingHyperbolicVelocity < incomingHyperbolicVelocity){
+        return outgoingHyperbolicVelocity;
     } else {
-        return 0.0;
+        return -10000.0;
+    }
+
+
+}
+
+//! Calculates Earth's limiting function
+double EarthAtmosphericTrajectoryFunction( const double incomingHyperbolicVelocity,
+                                          const double velocityBendingAngle )
+{
+    if ( (incomingHyperbolicVelocity > 6000 || incomingHyperbolicVelocity < 2000) ||
+         (incomingHyperbolicVelocity > 5000 && velocityBendingAngle > 100*mathematical_constants::PI / 180.0) )
+    {
+        return -10000.0;
+    }
+    double p00 = -2185.0;
+    double p10 = 1.801;
+    double p01 = 9602;
+    double p11 = -1.495;
+    double p02 = -4120.0;
+    double p12 = 0.2912;
+    double p03 = 368.0;
+
+    double x = incomingHyperbolicVelocity;
+    double y = velocityBendingAngle;
+
+    double outgoingHyperbolicVelocity = p00 + p10*x + p01*y + p11*x*y + p02*std::pow(y,2) + p12*x*std::pow(y,2) + p03*pow(y,3);
+
+    if (outgoingHyperbolicVelocity >= 0 && outgoingHyperbolicVelocity < incomingHyperbolicVelocity){
+        return outgoingHyperbolicVelocity;
+    } else {
+        return -10000.0;
+    }
+
+
+}
+
+//! Calculates Venus' limiting function
+double VenusAtmosphericTrajectoryFunction( const double incomingHyperbolicVelocity,
+                                          const double velocityBendingAngle )
+{
+    if (incomingHyperbolicVelocity > 6000 || incomingHyperbolicVelocity < 4000)
+    {
+        return -10000.0;
+    }
+    double p00 = 27010.0;
+    double p10 = -1.36;
+    double p01 = -13660.0;
+    double p11 = 0.5231;
+    double p02 = 1470;
+
+    double x = incomingHyperbolicVelocity;
+    double y = velocityBendingAngle;
+
+    double outgoingHyperbolicVelocity = p00 + p10*x + p01*y + p11*x*y + p02*std::pow(y,2);
+
+    if (outgoingHyperbolicVelocity >= 0 && outgoingHyperbolicVelocity < incomingHyperbolicVelocity && outgoingHyperbolicVelocity <= 3.0E3){
+        return outgoingHyperbolicVelocity;
+    } else {
+        return -10000.0;
     }
 
 
@@ -86,11 +147,6 @@ double AeroGravityAssist( const std::string centralBodyName,
                           const Eigen::Vector3d& incomingVelocity,
                           const Eigen::Vector3d& outgoingVelocity)
 {
-    // Check if Body is available for aerogravity assist.
-    if (centralBodyName != "Mars")
-    {
-        std::cerr<<"Planet does not have a limiting function.";
-    }
 
     // Compute incoming and outgoing hyperbolic excess velocity.
     const Eigen::Vector3d incomingHyperbolicExcessVelocity
@@ -107,11 +163,22 @@ double AeroGravityAssist( const std::string centralBodyName,
                             incomingHyperbolicExcessVelocity, outgoingHyperbolicExcessVelocity );
 
     // Calculate limit of outgoing hyperbolic exces velocity
-    double maxAGAOutgoingExcessVelocity = MarsAtmosphericTrajectoryFunction( absoluteIncomingExcessVelocity, bendingAngle );
+    double maxAGAOutgoingExcessVelocity = 0.0;
+    if ( centralBodyName == "Mars"  )
+    {
+        maxAGAOutgoingExcessVelocity = MarsAtmosphericTrajectoryFunction( absoluteIncomingExcessVelocity, bendingAngle );
+    } else if ( centralBodyName == "Earth"  )
+    {
+        maxAGAOutgoingExcessVelocity = EarthAtmosphericTrajectoryFunction( absoluteIncomingExcessVelocity, bendingAngle );
+    } else if ( centralBodyName == "Venus"  )
+    {
+        maxAGAOutgoingExcessVelocity = VenusAtmosphericTrajectoryFunction( absoluteIncomingExcessVelocity, bendingAngle );
+    } else
+    {
+        std::cerr<<"Planet does not have a limiting function.";
+    }
 
     double deltaV = 0;
-
-    // ADD CHECK FOR NEGATIVE maxAGAOutgoingExcessVelocity
 
     if (maxAGAOutgoingExcessVelocity < absoluteOutgoingExcessVelocity)
     {
